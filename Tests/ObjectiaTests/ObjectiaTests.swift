@@ -23,7 +23,12 @@ class ObjectiaTests: XCTestCase {
             try ObjectiaClient.initialize(apiKey: self.apiKey!) 
 
             let usage = try Usage.get()
-            print(usage)
+
+            let data = usage!["data"] as? NSDictionary
+            //print(data!)
+
+            let requests = data!["geoip_requests"] as? Int
+            print("Requests:", requests!)
 
         } catch {
             print("error....")

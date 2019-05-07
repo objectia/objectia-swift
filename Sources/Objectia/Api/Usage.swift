@@ -4,14 +4,14 @@
 //
 //  Copyright © 2019 UAB Salesfly. All rights reserved.
 //
-public struct Usage : Decodable {
+import Foundation
 
-    // MARK: - Properties
+public struct Usage : Decodable {
 
     /// The geoip requests counter.
     public let geoLocationRequests: Int
 
-    public static func get() throws -> String /*Usage?*/ {
+    public static func get() throws -> NSDictionary? {
         let restClient = try ObjectiaClient.getRestClient()
         let result = restClient.get(path: "/usage")
         return result

@@ -1,7 +1,6 @@
 import Foundation
-//import Alamofire
 
-class RestClient {
+class RestClient : NSObject, URLSessionDataDelegate {
     var apiKey: String
     var timeout: TimeInterval
     var apiBaseURL: String
@@ -12,23 +11,22 @@ class RestClient {
         self.timeout = timeout 
     }
 
-    private func processInfo(info: NSDictionary?) {
-        print("COMPLETED:")
-        print(info!)
+    public func get(path: String) -> NSDictionary? {
+        var result: NSDictionary?
+        execute(method: "GET", path: path)  { 
+            (data, error) in
+            result = data!
+            
+        } 
+        return result!
     }
 
-    public func get(path: String) -> String {
-        //var info: NSDictionary
-        execute(method: "GET", path: path, completion: processInfo)
-        return "xxx"
-    }
-
-    func execute(method: String, path: String, completion: @escaping (NSDictionary?) -> Void) {
+    func execute(method: String, path: String, taskCallback: @escaping (NSDictionary?, Error?) -> Void) {
         guard let url = URL(string: Constants.API_BASE_URL + path) else {
             print("Error: cannot create URL")
             return
         }
-        
+
         // Creaste URL Request
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)
         request.httpMethod = method
@@ -44,14 +42,11 @@ class RestClient {
         }
 
         // set up the session
-        //let config = URLSessionConfiguration.default
-        //let session = URLSession(configuration: config)
-        let session = URLSession.shared
+        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil )
 
         // Excute HTTP Request
-        let task = session.dataTask(with: request, completionHandler: {
-            (data: Data?, response: URLResponse?, error: Error?) in
-
+        session.dataTask(with: request) {
+          (data, response, error) -> Void in
              guard error == nil else {
                 print("error calling api")
                 print(error!)
@@ -72,10 +67,8 @@ class RestClient {
                     print("error trying to convert data to JSON")
                     return
                 }
-
-                // Print out dictionary
-                print(convertedJsonIntoDict)
-                completion(convertedJsonIntoDict)
+                
+                taskCallback(convertedJsonIntoDict, nil)
 
                 // Get value by key
                 //let firstNameValue = convertedJsonIntoDict["userName"] as? String
@@ -83,8 +76,18 @@ class RestClient {
             } catch {
                 print("Failed to convert data to JSON")
             }
-        })
-        
-        task.resume()
+
+            self.sema.signal()
+
+        }.resume()
+        sema.wait()
     }
+
+    // Used by the execute func
+    var sema = DispatchSemaphore( value: 0 )
+    /*func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data)
+    {
+        print("got data \(String(data: data, encoding: .utf8 ) ?? "<empty>")");
+        sema.signal()
+    }*/
 }
