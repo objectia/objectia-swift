@@ -6,19 +6,23 @@
 //
 import Foundation
 
-public struct Usage : Decodable {
+public struct Usage {
+    var geoLocationRequests: Int? = 0
+    var currencyRequests: Int? = 0
 
-    /// The geoip requests counter.
-    public let geoLocationRequests: Int
-
-    public static func get() throws -> NSDictionary? {
-        let restClient = try ObjectiaClient.getRestClient()
-        let result = restClient.get(path: "/usage")
-        return result
+    init(from: NSDictionary?) {
+        geoLocationRequests = from!["geoip_requests"] as? Int ?? 0
+        currencyRequests = from!["currency_requests"] as? Int ?? 0
     }
 
-    private enum CodingKeys: String, CodingKey {
-        //case id, email, phone
-        case geoLocationRequests = "geoip_requests"
+    static func get() throws -> Usage? {
+        do {
+            let restClient = try ObjectiaClient.getRestClient()
+            let data = try restClient.get(path: "/usage")
+            return Usage(from: data!)
+        } catch {
+            print("THROWING...")
+            throw error
+        }
     }
 }

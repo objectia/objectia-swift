@@ -14,7 +14,8 @@ let package = Package(
             name: "Objectia",
             targets: ["Objectia"]),
     ],
-    dependencies: [],
+    dependencies: [
+    ],
     targets: [
         .target(
             name: "Objectia"

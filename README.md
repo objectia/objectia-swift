@@ -76,13 +76,7 @@ Then run <code>carthage update</code>.
 
 ### Requirements
 
-* Swift 5.0+
-
-
-### Dependencies
-
-* Alamofire >= 5.0.0
-* Moya >= 13.0.0
+* Swift 4.0+
 
 
 ## Usage
@@ -90,7 +84,23 @@ Then run <code>carthage update</code>.
 The library needs to be configured with your account's API key. Get your own API key by signing up for a free [Objectia account](https://objectia.com).
 
 ```swift
+import Foundation
+import Objectia
 
+guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
+    print("API key not found...")
+    return
+}
+
+do {
+    try ObjectiaClient.initialize(apiKey: apiKey) 
+    let usage = try Usage.get()
+    let requests = usage!["geoip_requests"] as? Int
+    print("Geo location requests:", requests!)
+
+} catch {
+    print("error....")
+}
 ```
 
 

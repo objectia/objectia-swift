@@ -4,17 +4,6 @@ branches:
   only:
     - master
 
-#before_install:
-#- brew update
-#- if brew outdated | grep -qx xctool; then brew upgrade xctool; fi
-#- if brew outdated | grep -qx carthage; then brew upgrade carthage; fi
-#- travis_wait 35 carthage update --platform Mac
-#- travis_wait 35 carthage update --platform iOS,Mac
-
 script:
   swift build
-#  - xcodebuild -version
-#  - xcodebuild -showsdks
-#  - xcodebuild clean build -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator
-
-  #- xcodebuild test -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator
+#  swift test

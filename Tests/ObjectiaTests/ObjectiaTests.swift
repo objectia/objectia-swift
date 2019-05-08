@@ -1,6 +1,7 @@
 import XCTest
 
 @testable import Objectia
+import Foundation
 
 class ObjectiaTests: XCTestCase {
 
@@ -23,19 +24,33 @@ class ObjectiaTests: XCTestCase {
             try ObjectiaClient.initialize(apiKey: self.apiKey!) 
 
             let usage = try Usage.get()
-
-            let data = usage!["data"] as? NSDictionary
-            //print(data!)
-
-            let requests = data!["geoip_requests"] as? Int
-            print("Requests:", requests!)
+            print("Requests:", usage!.geoLocationRequests!)
+            print("Requests:", usage!.currencyRequests!)
 
         } catch {
-            print("error....")
+            print("Unexpected error: \(error).")
         }
 
 
         //let res = obj.Test()
         //XCTAssertEqual(res, "HEI")   
     }
+
+    /*func testExample() {
+        guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
+            print("ERROR")
+            return
+        }
+
+        do {
+            try ObjectiaClient.initialize(apiKey: apiKey) 
+            let usage = try Usage.get()
+            let requests = usage!["geoip_requests"] as? Int
+            print("Requests:", requests!)
+
+        } catch {
+            print("error....")
+        }
+    }*/
+
 }
