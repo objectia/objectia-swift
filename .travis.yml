@@ -12,5 +12,9 @@ branches:
 #- travis_wait 35 carthage update --platform iOS,Mac
 
 script:
-- xcodebuild clean build -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator
-#- xcodebuild test -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator
+  swift build
+#  - xcodebuild -version
+#  - xcodebuild -showsdks
+#  - xcodebuild clean build -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator
+
+  #- xcodebuild test -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator
