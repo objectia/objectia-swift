@@ -1,17 +1,16 @@
-language: objective-c
-
 os: osx
+osx_image: xcode9.4
+branches:
+  only:
+    - master
 
-osx_image: xcode7.3
-#osx_image: xcode9.1
-
-before_install:
-- brew update
-- if brew outdated | grep -qx xctool; then brew upgrade xctool; fi
-- if brew outdated | grep -qx carthage; then brew upgrade carthage; fi
-- travis_wait 35 carthage update --platform Mac
+#before_install:
+#- brew update
+#- if brew outdated | grep -qx xctool; then brew upgrade xctool; fi
+#- if brew outdated | grep -qx carthage; then brew upgrade carthage; fi
+#- travis_wait 35 carthage update --platform Mac
 #- travis_wait 35 carthage update --platform iOS,Mac
 
 script:
 - xcodebuild clean build -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator
-- xcodebuild test -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator
+#- xcodebuild test -project Objectia.xcodeproj -scheme macOS -sdk iphonesimulator

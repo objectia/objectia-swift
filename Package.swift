@@ -14,14 +14,10 @@ let package = Package(
             name: "Objectia",
             targets: ["Objectia"]),
     ],
-    dependencies: [
-    //    .package(url: "https://github.com/Moya/Moya.git", .upToNextMajor(from: "12.0.0")),
-    //    .package(url: "https://github.com/Alamofire/Alamofire.git", from: "4.0.0")
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "Objectia"
-      //      dependencies: ["Alamofire"]
         ),
         .testTarget(
             name: "ObjectiaTests",
