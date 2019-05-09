@@ -22,19 +22,58 @@ class ObjectiaTests: XCTestCase {
     func testGetUsage() {
         do {
             try ObjectiaClient.initialize(apiKey: self.apiKey!) 
-
             let usage = try Usage.get()
+            XCTAssertNotNil(usage!)
             print("Requests:", usage!.geoLocationRequests!)
-            print("Requests:", usage!.currencyRequests!)
+        } catch {
+            XCTAssert(false)      
+        }
+    }
+
+    func testGetLocation() {
+        do {
+            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
+            let location = try GeoLocation.get(ip: "8.8.8.8")
+
+            XCTAssertNotNil(location!)
+            XCTAssertEqual(location!.countryCode!, "US")   
+ 
+            print("Country:", location!.country!)
+            print("Country code:", location!.countryCode!)
+
+        } catch {
+            XCTAssert(false)      
+        }
+    }
+
+    func testGetLocationWithInvalidIP() {
+        do {
+            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
+            let location = try GeoLocation.get(ip: "288.8.8.8")
+            XCTAssertNil(location!)   
+         } catch let err as ObjectiaError {
+             switch err {
+                 case .responseError(let params):
+                    XCTAssertEqual(params.code, "err-invalid-ip")      
+                default:
+                    XCTAssert(false)      
+             }
+        } catch {
+            XCTAssert(false)      
+        }
+    }
+
+
+    /*func testGetBulkLocation() {
+        do {
+            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
+            let locations = try GeoLocation.getBulk(ipList: ["8.8.8.8", "apple.com"])
+            XCTAssertEqual(locations!.count, 2)   
 
         } catch {
             print("Unexpected error: \(error).")
         }
-
-
-        //let res = obj.Test()
-        //XCTAssertEqual(res, "HEI")   
-    }
+    }*/
 
     /*func testExample() {
         guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {

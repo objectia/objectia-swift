@@ -7,22 +7,15 @@
 import Foundation
 
 public struct Usage {
-    var geoLocationRequests: Int? = 0
-    var currencyRequests: Int? = 0
+    var geoLocationRequests: Int?
 
     init(from: NSDictionary?) {
         geoLocationRequests = from!["geoip_requests"] as? Int ?? 0
-        currencyRequests = from!["currency_requests"] as? Int ?? 0
     }
 
     static func get() throws -> Usage? {
-        do {
-            let restClient = try ObjectiaClient.getRestClient()
-            let data = try restClient.get(path: "/usage")
-            return Usage(from: data!)
-        } catch {
-            print("THROWING...")
-            throw error
-        }
+        let restClient = try ObjectiaClient.getRestClient()
+        let data = try restClient.get(path: "/usage")
+        return Usage(from: data!)
     }
 }

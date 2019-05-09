@@ -8,6 +8,6 @@
 enum ObjectiaError: Error {
   case missingArgument(reason: String)
   case notInitialized(reason: String)
-  case response(reason: String, code: String, status: Int)
+  case responseError(reason: String, code: String, status: Int)
   case invalidURL(reason: String)
 }
