@@ -1,6 +1,6 @@
 # objectia-swift [![Build Status](https://travis-ci.org/objectia/objectia-swift.svg?branch=master)](https://travis-ci.org/objectia/objectia-swift) 
 
-Swift client for Objectia API
+Swift client for Objectia API&reg;
 
 
 ## Documentation
@@ -21,7 +21,7 @@ To integrate using Apple's Swift package manager, add the following as a depende
 and then specify "Objectia" as a dependency of the Target in which you wish to use Objectia. Here's an example 
 
 ```swift
-// swift-tools-version:5.0
+// swift-tools-version:4.0
 import PackageDescription
 
 let package = Package(
