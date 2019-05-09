@@ -15,16 +15,15 @@ class ObjectiaClient {
     // Prevent class instantiation
     fileprivate init() {}
 
-    
-    /// Initializes the Objectia API client.
-    ///
-    /// - Parameter:
-    ///     - apiKey: The API key .
-    ///     - timeout: The connection timeout in seconds.
-    ///
-    /// - Throws: 
-    ///     - `ObjectiaError.missingArgument` if no API is provided
-    ///     - `ObjectiaError.notInitialized` if rest client is used before initialized
+    /**
+     Initializes the Objectia API client.
+     - parameters:
+        - apiKey: The API key.
+        - timeout: The connection timeout in seconds.
+     - throws:
+        - `ObjectiaError.missingArgument` if no API is provided.
+        - `ObjectiaError.notInitialized` if rest client is used before initialized.
+    */
     public static func initialize(apiKey: String, timeout: TimeInterval = Constants.DEFAULT_TIMEOUT) throws {
         try ObjectiaClient.setApiKey(apiKey: apiKey)
         ObjectiaClient.setTimeout(timeout: timeout)
@@ -34,11 +33,9 @@ class ObjectiaClient {
         if apiKey.isEmpty {
            throw ObjectiaError.missingArgument(reason: "No API key provided")
         }
-
         if apiKey != ObjectiaClient.apiKey {
             ObjectiaClient.invalidate()
         }
-
         ObjectiaClient.apiKey = apiKey
     }
 
@@ -53,11 +50,9 @@ class ObjectiaClient {
         if ObjectiaClient.restClient != nil {
             return ObjectiaClient.restClient!
         }
-
         if ObjectiaClient.apiKey == nil {
-           throw ObjectiaError.notInitialized(reason: "RestClient was used before ApiKey was set, please call ObjectiaClient.initialize()")
+           throw ObjectiaError.notInitialized(reason: "Client was used before ApiKey was set, please call ObjectiaClient.initialize() first")
         }
-
         ObjectiaClient.restClient = RestClient(apiKey: ObjectiaClient.apiKey!, timeout: ObjectiaClient.timeout!)
         return ObjectiaClient.restClient!
     }

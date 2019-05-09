@@ -5,7 +5,7 @@ class RestClient : NSObject, URLSessionDataDelegate {
     var timeout: TimeInterval
     var apiBaseURL: String
 
-    // Used by the execute func
+    // Used by execute() to wait for request done
     var sema = DispatchSemaphore(value: 0)
 
     init(apiKey: String, timeout: TimeInterval) {
@@ -14,27 +14,28 @@ class RestClient : NSObject, URLSessionDataDelegate {
         self.timeout = timeout 
     }
 
-    public func get(path: String) throws -> NSDictionary? {
+    public func get(path: String) throws -> Any? {
         return try request(method: "GET", path: path)
-        /*var result: NSDictionary?
-        var err: Error?
-        try execute(method: "GET", path: path) { 
-            (data, error) in
-            result = data
-            err = error
-        } 
-        if result == nil {
-            throw err!
-        }            
-        return result!*/
     }
 
-    public func post(path: String, payload: Data?) throws -> NSDictionary? {
+    public func post(path: String, payload: Data?) throws -> Any? {
         return try request(method: "POST", path: path, payload: payload)
     }
 
-    func request(method: String, path: String, payload: Data? = nil) throws -> NSDictionary? {
-        var result: NSDictionary?
+    public func put(path: String, payload: Data?) throws -> Any? {
+        return try request(method: "PUT", path: path, payload: payload)
+    }
+
+    public func patch(path: String, payload: Data?) throws -> Any? {
+        return try request(method: "PATCH", path: path, payload: payload)
+    }
+
+    public func delete(path: String) throws -> Any? {
+        return try request(method: "DELETE", path: path)
+    }
+
+    func request(method: String, path: String, payload: Data? = nil) throws -> Any? {
+        var result: Any?
         var err: Error?
         try execute(method: method, path: path, payload: payload) { 
             (data, error) in
@@ -47,7 +48,7 @@ class RestClient : NSObject, URLSessionDataDelegate {
         return result!
     }
 
-    func execute(method: String, path: String, payload: Data? = nil, taskCallback: @escaping (NSDictionary?, Error?) -> Void) throws {
+    func execute(method: String, path: String, payload: Data? = nil, taskCallback: @escaping (Any?, Error?) -> Void) throws {
         guard let url = URL(string: Constants.API_BASE_URL + path) else {
             throw ObjectiaError.invalidURL(reason: Constants.API_BASE_URL + path)
         }
@@ -68,81 +69,62 @@ class RestClient : NSObject, URLSessionDataDelegate {
         }
 
         // set up the session
-        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil )
+        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
 
         // Excute HTTP Request
         session.dataTask(with: request) {
           (data, response, error) -> Void in
-             guard error == nil else {
-                print("error calling api")
-                print(error!)
-                taskCallback(nil, error)
-                self.sema.signal()  
-                return
-            }
-            
-    print("1")
-
-            if let httpResponse = response as? HTTPURLResponse{
-                // make sure we got data
-
-                guard let responseData = data else {
-                    print("Error: did not receive data")
-                    taskCallback(nil, error)
-                    self.sema.signal()  
-                    return
-                }
-
-print("HTTP Response:", httpResponse)
-print("Status code:", httpResponse.statusCode)
-
-                if httpResponse.statusCode >= 500 {
-                    switch httpResponse.statusCode {
-                        case 502:
-                            taskCallback(nil, APIError.badGateway(reason: "Bad gateway", code: "err-bad-gateway"))
-                        case 503:
-                            taskCallback(nil, APIError.serviceUnavailable(reason: "Service Unavailable", code: "err-service-unavailable"))
-                        default:
-                            taskCallback(nil, APIError.serverError(reason: "Internal server error", code: "err-server-error"))
-                    }
-                    self.sema.signal()  
-                    return
-                }
-
-
-                // Convert JSON to NSDictionary
-                do {
-                    guard let content = try JSONSerialization.jsonObject(with: responseData, options: []) 
-                        as? NSDictionary 
-                    else {
-                        print("error trying to convert data to JSON")
-                        taskCallback(nil, error)
-                        self.sema.signal()  
-                        return
-                    }
-                    
-                    if [200,201].contains(httpResponse.statusCode) {
-                        taskCallback(content["data"] as? NSDictionary, nil)
-                    } else {
-                        let message = content["message"] as! String //?? "MESSAGE"
-                        let code = content["code"] as! String //?? "CODE"
-                        switch (httpResponse.statusCode) {
-                            case 401:
-                                taskCallback(nil, APIError.unauthorized(reason: message, code: code))
-                            case 403:
-                                taskCallback(nil, APIError.forbidden(reason: message, code: code))
-                            case 404:
-                                taskCallback(nil, APIError.notFound(reason: message, code: code))
-                            case 429:
-                                taskCallback(nil, APIError.tooManyRequests(reason: message, code: code))
-                            default:    
-                                taskCallback(nil, APIError.badRequest(reason: message, code: code))
+            if error == nil {
+                // request seems to be ok
+                if let httpResponse = response as? HTTPURLResponse{
+                    // make sure we got any data
+                    if let responseData = data {
+                        // Process error without any messages/codes
+                        if httpResponse.statusCode >= 500 {
+                            switch httpResponse.statusCode {
+                                case 502:
+                                    taskCallback(nil, ObjectiaError.badGateway(reason: "Bad gateway", code: "err-bad-gateway"))
+                                case 503:
+                                    taskCallback(nil, ObjectiaError.serviceUnavailable(reason: "Service unavailable", code: "err-service-unavailable"))
+                                default:
+                                    taskCallback(nil, ObjectiaError.serverError(reason: "Internal server error", code: "err-server-error"))
+                            }
+                        } else {
+                            do {
+                                let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? NSDictionary 
+                                if [200,201].contains(httpResponse.statusCode) {
+                                    taskCallback(json!["data"], nil)
+                                } else {
+                                    var error: Error
+                                    let message = json!["message"] as! String //?? "MESSAGE"
+                                    let code = json!["code"] as! String //?? "CODE"
+                                    switch (httpResponse.statusCode) {
+                                        case 401:
+                                            error = ObjectiaError.unauthorized(reason: message, code: code)
+                                        case 403:
+                                            error = ObjectiaError.forbidden(reason: message, code: code)
+                                        case 404:
+                                            error = ObjectiaError.notFound(reason: message, code: code)
+                                        case 429:
+                                            error = ObjectiaError.tooManyRequests(reason: message, code: code)
+                                        default:    
+                                            error = ObjectiaError.badRequest(reason: message, code: code)
+                                    }
+                                    taskCallback(nil, error)
+                                }
+                            } catch {
+                                print("Failed to convert data to JSON")
+                                taskCallback(nil, error)
+                            }
                         }
                     }
-                } catch {
-                    print("Failed to convert data to JSON")
+                } else {
+                    print("Error: did not receive data")
                     taskCallback(nil, error)
                 }
+            } else {
+                print("Error calling api")
+                taskCallback(nil, error)
             }
 
             self.sema.signal()  
