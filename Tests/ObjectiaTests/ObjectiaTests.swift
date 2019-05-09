@@ -25,12 +25,14 @@ class ObjectiaTests: XCTestCase {
             let usage = try Usage.get()
             XCTAssertNotNil(usage!)
             print("Requests:", usage!.geoLocationRequests!)
+        } catch let err as APIError {
+            print("Request failed", err) 
         } catch {
             XCTAssert(false)      
         }
     }
 
-    func testGetLocation() {
+  /*  func testGetLocation() {
         do {
             try ObjectiaClient.initialize(apiKey: self.apiKey!) 
             let location = try GeoLocation.get(ip: "8.8.8.8")
@@ -51,7 +53,7 @@ class ObjectiaTests: XCTestCase {
             try ObjectiaClient.initialize(apiKey: self.apiKey!) 
             let location = try GeoLocation.get(ip: "288.8.8.8")
             XCTAssertNil(location!)   
-         } catch let err as ObjectiaError {
+         } catch let err as APIError {
              switch err {
                  case .responseError(let params):
                     XCTAssertEqual(params.code, "err-invalid-ip")      
@@ -62,7 +64,7 @@ class ObjectiaTests: XCTestCase {
             XCTAssert(false)      
         }
     }
-
+*/
 
     /*func testGetBulkLocation() {
         do {

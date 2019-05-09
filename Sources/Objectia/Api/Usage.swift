@@ -15,7 +15,7 @@ public struct Usage {
 
     static func get() throws -> Usage? {
         let restClient = try ObjectiaClient.getRestClient()
-        let data = try restClient.get(path: "/usage")
+        let data = try restClient.get(path: "/usage2")
         return Usage(from: data!)
     }
 }

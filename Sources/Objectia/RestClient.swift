@@ -81,14 +81,34 @@ class RestClient : NSObject, URLSessionDataDelegate {
                 return
             }
             
+    print("1")
+
             if let httpResponse = response as? HTTPURLResponse{
                 // make sure we got data
+
                 guard let responseData = data else {
                     print("Error: did not receive data")
                     taskCallback(nil, error)
                     self.sema.signal()  
                     return
                 }
+
+print("HTTP Response:", httpResponse)
+print("Status code:", httpResponse.statusCode)
+
+                if httpResponse.statusCode >= 500 {
+                    switch httpResponse.statusCode {
+                        case 502:
+                            taskCallback(nil, APIError.badGateway(reason: "Bad gateway", code: "err-bad-gateway"))
+                        case 503:
+                            taskCallback(nil, APIError.serviceUnavailable(reason: "Service Unavailable", code: "err-service-unavailable"))
+                        default:
+                            taskCallback(nil, APIError.serverError(reason: "Internal server error", code: "err-server-error"))
+                    }
+                    self.sema.signal()  
+                    return
+                }
+
 
                 // Convert JSON to NSDictionary
                 do {
@@ -104,9 +124,20 @@ class RestClient : NSObject, URLSessionDataDelegate {
                     if [200,201].contains(httpResponse.statusCode) {
                         taskCallback(content["data"] as? NSDictionary, nil)
                     } else {
-                        let message = content["message"] as? String
-                        let code = content["code"] as? String
-                        taskCallback(nil, ObjectiaError.responseError(reason: message!, code: code!, status: httpResponse.statusCode))
+                        let message = content["message"] as! String //?? "MESSAGE"
+                        let code = content["code"] as! String //?? "CODE"
+                        switch (httpResponse.statusCode) {
+                            case 401:
+                                taskCallback(nil, APIError.unauthorized(reason: message, code: code))
+                            case 403:
+                                taskCallback(nil, APIError.forbidden(reason: message, code: code))
+                            case 404:
+                                taskCallback(nil, APIError.notFound(reason: message, code: code))
+                            case 429:
+                                taskCallback(nil, APIError.tooManyRequests(reason: message, code: code))
+                            default:    
+                                taskCallback(nil, APIError.badRequest(reason: message, code: code))
+                        }
                     }
                 } catch {
                     print("Failed to convert data to JSON")
