@@ -1,6 +1,6 @@
 # objectia-swift [![Build Status](https://travis-ci.org/objectia/objectia-swift.svg?branch=master)](https://travis-ci.org/objectia/objectia-swift) 
 
-Swift client for Objectia API&reg;
+Swift client for Objectia&reg; API
 
 
 ## Documentation
