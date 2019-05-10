@@ -39,10 +39,10 @@ class ObjectiaTests: XCTestCase {
 
             XCTAssertNotNil(location!)
             XCTAssertEqual(location!.countryCode!, "US")   
- 
             print("Country:", location!.country!)
             print("Country code:", location!.countryCode!)
 
+            print(location!)
         } catch {
             XCTAssert(false)      
         }

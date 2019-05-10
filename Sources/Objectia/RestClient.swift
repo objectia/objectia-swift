@@ -45,6 +45,9 @@ class RestClient : NSObject, URLSessionDataDelegate {
         if result == nil {
             throw err!
         }            
+
+       /// print(result!)
+
         return result!
     }
 
@@ -75,8 +78,7 @@ class RestClient : NSObject, URLSessionDataDelegate {
         session.dataTask(with: request) {
           (data, response, error) -> Void in
             if error == nil {
-                // request seems to be ok
-                if let httpResponse = response as? HTTPURLResponse{
+                if let httpResponse = response as? HTTPURLResponse {
                     // make sure we got any data
                     if let responseData = data {
                         // Process error without any messages/codes
@@ -92,7 +94,7 @@ class RestClient : NSObject, URLSessionDataDelegate {
                         } else {
                             do {
                                 let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? NSDictionary 
-                                if [200,201].contains(httpResponse.statusCode) {
+                                if [200, 201].contains(httpResponse.statusCode) {
                                     taskCallback(json!["data"], nil)
                                 } else {
                                     var error: Error
@@ -126,10 +128,8 @@ class RestClient : NSObject, URLSessionDataDelegate {
                 print("Error calling api")
                 taskCallback(nil, error)
             }
-
             self.sema.signal()  
         }.resume()
         sema.wait()
     }
-
 }
