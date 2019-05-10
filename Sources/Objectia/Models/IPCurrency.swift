@@ -17,11 +17,11 @@ public struct IPCurrency {
     var decimalDigits: Int?    
 
     static func fromJSON(json: Any?) -> Any? {
-        if json is NSArray {
-            let arr = json as! NSArray
+        if json is Array<Any> {
+            let arr = json as! Array<Any>
             var result = [IPCurrency]()
             for entry in arr {
-                let e = entry as? NSDictionary
+                let e = entry as? Dictionary<String,Any>
                 var item = IPCurrency()
                 item.code = e!["code"] as? String 
                 item.numericCode = e!["num_code"] as? String 

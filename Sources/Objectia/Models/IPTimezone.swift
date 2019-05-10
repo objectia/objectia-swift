@@ -15,8 +15,8 @@ public struct IPTimezone {
     var daylightSaving: Bool? 
 
     static func fromJSON(json: Any?) -> Any? {
-        if json is NSDictionary {
-            let dict = json as! NSDictionary
+        if json is Dictionary<String,Any> {
+            let dict = json as! Dictionary<String,Any>
             var result = IPTimezone()
             result.id = dict["id"] as? String 
             result.gmtOffset = dict["gmt_offset"] as? Int 

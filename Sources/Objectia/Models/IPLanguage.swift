@@ -15,11 +15,11 @@ public struct IPLanguage {
     var rtl: Bool?    
 
     static func fromJSON(json: Any?) -> Any? {
-        if json is NSArray {
-            let arr = json as! NSArray
+        if json is Array<Any> {
+            let arr = json as! Array<Any>
             var result = [IPLanguage]()
             for entry in arr {
-                let e = entry as? NSDictionary
+                let e = entry as? Dictionary<String,Any>
                 var item = IPLanguage()
                 item.code = e!["code"] as? String 
                 item.code2 = e!["code2"] as? String 

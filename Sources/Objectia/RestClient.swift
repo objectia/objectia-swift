@@ -45,9 +45,7 @@ class RestClient : NSObject, URLSessionDataDelegate {
         if result == nil {
             throw err!
         }            
-
-       /// print(result!)
-
+        //print(result!)
         return result!
     }
 
@@ -93,13 +91,13 @@ class RestClient : NSObject, URLSessionDataDelegate {
                             }
                         } else {
                             do {
-                                let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? NSDictionary 
+                                let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? Dictionary<String,Any>
                                 if [200, 201].contains(httpResponse.statusCode) {
                                     taskCallback(json!["data"], nil)
                                 } else {
                                     var error: Error
-                                    let message = json!["message"] as! String //?? "MESSAGE"
-                                    let code = json!["code"] as! String //?? "CODE"
+                                    let message = json!["message"] as! String 
+                                    let code = json!["code"] as! String
                                     switch (httpResponse.statusCode) {
                                         case 401:
                                             error = ObjectiaError.unauthorized(reason: message, code: code)
