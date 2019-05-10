@@ -21,7 +21,7 @@ To integrate using Apple's Swift package manager, add the following as a depende
 and then specify "Objectia" as a dependency of the Target in which you wish to use Objectia. Here's an example 
 
 ```swift
-// swift-tools-version:4.0
+// swift-tools-version:4.0 
 import PackageDescription
 
 let package = Package(
@@ -37,7 +37,7 @@ let package = Package(
     targets: [
         .target(
             name: "MyPackage",
-         )
+            dependencies: ["Objectia"])
     ]
 )
 ```
@@ -94,12 +94,12 @@ guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
 
 do {
     try ObjectiaClient.initialize(apiKey: apiKey) 
-    let usage = try Usage.get()
-    let requests = usage!["geoip_requests"] as? Int
-    print("Geo location requests:", requests!)
-
+    let location = try GeoLocation.get("8.8.8.8")
+    print("Country code:", location!.countryCode!)
+} catch let err as ObjectiaError {
+    print("Request failed", err) 
 } catch {
-    print("error....")
+    print("Other error...") 
 }
 ```
 
