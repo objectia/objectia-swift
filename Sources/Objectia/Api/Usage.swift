@@ -6,22 +6,18 @@
 //
 import Foundation
 
-public struct Usage {
-    var geoLocationRequests: Int?
+struct Usage : Decodable {
+    var geoLocationRequests: Int
+
+    private enum CodingKeys : String, CodingKey {
+        case geoLocationRequests = "geoip_requests"
+    }
 
     static func get() throws -> Usage? {
         let restClient = try ObjectiaClient.getRestClient()
         let data = try restClient.get(path: "/usage")
-        return Usage.fromJSON(json: data!) as? Usage
-    }
-
-    static func fromJSON(json: Any?) -> Any? {
-        if json is Dictionary<String,Any> {
-            let dict = json as! Dictionary<String,Any>  
-            var result = Usage()
-            result.geoLocationRequests = dict["geoip_requests"] as? Int ?? 0
-            return result
-        } 
-        return nil
+        let resp = try JSONDecoder().decode(Response<Usage>.self, from: data!)
+        dump(resp)
+        return resp.data
     }
 }

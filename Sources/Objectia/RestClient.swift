@@ -14,28 +14,28 @@ class RestClient : NSObject, URLSessionDataDelegate {
         self.timeout = timeout 
     }
 
-    public func get(path: String) throws -> Any? {
+    public func get(path: String) throws -> Data? {
         return try request(method: "GET", path: path)
     }
 
-    public func post(path: String, payload: Data?) throws -> Any? {
+    public func post(path: String, payload: Data?) throws -> Data? {
         return try request(method: "POST", path: path, payload: payload)
     }
 
-    public func put(path: String, payload: Data?) throws -> Any? {
+    public func put(path: String, payload: Data?) throws -> Data? {
         return try request(method: "PUT", path: path, payload: payload)
     }
 
-    public func patch(path: String, payload: Data?) throws -> Any? {
+    public func patch(path: String, payload: Data?) throws -> Data? {
         return try request(method: "PATCH", path: path, payload: payload)
     }
 
-    public func delete(path: String) throws -> Any? {
+    public func delete(path: String) throws -> Data? {
         return try request(method: "DELETE", path: path)
     }
 
-    func request(method: String, path: String, payload: Data? = nil) throws -> Any? {
-        var result: Any?
+    func request(method: String, path: String, payload: Data? = nil) throws -> Data? {
+        var result: Data?
         var err: Error?
         try execute(method: method, path: path, payload: payload) { 
             (data, error) in
@@ -49,7 +49,7 @@ class RestClient : NSObject, URLSessionDataDelegate {
         return result!
     }
 
-    func execute(method: String, path: String, payload: Data? = nil, taskCallback: @escaping (Any?, Error?) -> Void) throws {
+    func execute(method: String, path: String, payload: Data? = nil, taskCallback: @escaping (Data?, Error?) -> Void) throws {
         guard let url = URL(string: Constants.API_BASE_URL + path) else {
             throw ObjectiaError.invalidURL(reason: Constants.API_BASE_URL + path)
         }
@@ -77,43 +77,15 @@ class RestClient : NSObject, URLSessionDataDelegate {
           (data, response, error) -> Void in
             if error == nil {
                 if let httpResponse = response as? HTTPURLResponse {
-                    // make sure we got any data
                     if let responseData = data {
-                        // Process error without any messages/codes
                         if httpResponse.statusCode >= 500 {
-                            switch httpResponse.statusCode {
-                                case 502:
-                                    taskCallback(nil, ObjectiaError.badGateway(reason: "Bad gateway", code: "err-bad-gateway"))
-                                case 503:
-                                    taskCallback(nil, ObjectiaError.serviceUnavailable(reason: "Service unavailable", code: "err-service-unavailable"))
-                                default:
-                                    taskCallback(nil, ObjectiaError.serverError(reason: "Internal server error", code: "err-server-error"))
-                            }
+                            let error = ServerError.compose(statusCode: httpResponse.statusCode)
+                            taskCallback(nil, error)
                         } else {
-                            do {
-                                let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? Dictionary<String,Any>
-                                if [200, 201].contains(httpResponse.statusCode) {
-                                    taskCallback(json!["data"], nil)
-                                } else {
-                                    var error: Error
-                                    let message = json!["message"] as! String 
-                                    let code = json!["code"] as! String
-                                    switch (httpResponse.statusCode) {
-                                        case 401:
-                                            error = ObjectiaError.unauthorized(reason: message, code: code)
-                                        case 403:
-                                            error = ObjectiaError.forbidden(reason: message, code: code)
-                                        case 404:
-                                            error = ObjectiaError.notFound(reason: message, code: code)
-                                        case 429:
-                                            error = ObjectiaError.tooManyRequests(reason: message, code: code)
-                                        default:    
-                                            error = ObjectiaError.badRequest(reason: message, code: code)
-                                    }
-                                    taskCallback(nil, error)
-                                }
-                            } catch {
-                                print("Failed to convert data to JSON")
+                            if [200, 201].contains(httpResponse.statusCode) {
+                                taskCallback(responseData, nil)
+                            } else {
+                                let error = ResponseError.compose(from: responseData, statusCode: httpResponse.statusCode)
                                 taskCallback(nil, error)
                             }
                         }
