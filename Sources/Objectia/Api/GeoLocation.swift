@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public struct GeoLocation {
+struct GeoLocation : Decodable {
     var ipAddress: String?         
     var type: String?   // ipv4 or ipv6       
     var hostname: String?                
@@ -33,11 +33,41 @@ public struct GeoLocation {
     var timezone: IPTimezone?
     //var IPSecurity security 
 
+    private enum CodingKeys : String, CodingKey {
+        case ipAddress = "ip"         
+        case type
+        case hostname                
+        case continent            
+        case continentCode = "continent_code"        
+        case country = "country_name"    
+        case countryNative = "country_name_native"        
+        case countryCode = "country_code" 
+        case countryCode3 = "country_code3"         
+        case capital              
+        case region = "region_name"                  
+        case regionCode = "region_code"              
+        case city                     
+        case postcode                 
+        case latitude
+        case longitude
+        case phonePrefix = "phone_prefix"             
+        case flag                    
+        case flagEmoji = "flag_emoji"               
+        case isEU = "is_eu"
+        case tld = "internet_tld"                     
+        //case currencies
+        //case languages
+        //case timezone
+        //case security 
+    }
+
     static func get(ip: String, fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> GeoLocation? {
         let restClient = try ObjectiaClient.getRestClient()
         let query = makeQuery(fields: fields, hostname: hostname, security: security)
         let data = try restClient.get(path: "/geoip/" + ip + query)
-        return GeoLocation.fromJSON(json: data!) as? GeoLocation
+        let resp = try JSONDecoder().decode(Response<GeoLocation>.self, from: data!)
+        dump(resp)
+        return resp.data
     }
 
     static func getCurrent(fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> GeoLocation? {
@@ -49,7 +79,9 @@ public struct GeoLocation {
         let ips = ipList.joined(separator: ",")
         let query = makeQuery(fields: fields, hostname: hostname, security: security)
         let data = try restClient.get(path: "/geoip/" + ips + query)
-        return GeoLocation.fromJSON(json: data!) as? [GeoLocation]
+        let resp = try JSONDecoder().decode(Response<[GeoLocation]>.self, from: data!)
+        dump(resp)
+        return resp.data
     }
 
     static private func makeQuery(fields: String? = nil, hostname: Bool = false, security: Bool = false) -> String {
@@ -68,7 +100,7 @@ public struct GeoLocation {
         return result
     }
  
-    static func fromJSON(json: Any?) -> Any? {
+    /*static func fromJSON(json: Any?) -> Any? {
         if json is Dictionary<String,Any> {
             let dict = json as! Dictionary<String,Any>  
             var result = GeoLocation()
@@ -110,5 +142,5 @@ public struct GeoLocation {
             return result
         }
         return nil
-    }
+    }*/
 }

@@ -4,7 +4,6 @@ import XCTest
 import Foundation
 
 class ObjectiaTests: XCTestCase {
-
     var apiKey: String?
 
     override func setUp() {
@@ -34,7 +33,7 @@ class ObjectiaTests: XCTestCase {
     }
     
 
-    /*func testGetLocation() {
+    func testGetLocation() {
         do {
             try ObjectiaClient.initialize(apiKey: self.apiKey!) 
             let location = try GeoLocation.get(ip: "8.8.8.8")
@@ -77,7 +76,7 @@ class ObjectiaTests: XCTestCase {
             print("Unexpected error: \(error).")
         }
     }
-*/
+
     /*func testExample() {
         guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
             print("ERROR")
