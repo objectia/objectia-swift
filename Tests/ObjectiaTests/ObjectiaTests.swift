@@ -32,7 +32,6 @@ class ObjectiaTests: XCTestCase {
         }
     }
     
-
     func testGetLocation() {
         do {
             try ObjectiaClient.initialize(apiKey: self.apiKey!) 
@@ -42,9 +41,9 @@ class ObjectiaTests: XCTestCase {
             XCTAssertEqual(location!.countryCode!, "US")   
             print("Country:", location!.country!)
             print("Country code:", location!.countryCode!)
-
-            print(location!)
+            dump(location!)
         } catch {
+            print(error)
             XCTAssert(false)      
         }
     }
@@ -76,22 +75,4 @@ class ObjectiaTests: XCTestCase {
             print("Unexpected error: \(error).")
         }
     }
-
-    /*func testExample() {
-        guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
-            print("ERROR")
-            return
-        }
-
-        do {
-            try ObjectiaClient.initialize(apiKey: apiKey) 
-            let usage = try Usage.get()
-            let requests = usage!["geoip_requests"] as? Int
-            print("Requests:", requests!)
-
-        } catch {
-            print("error....")
-        }
-    }*/
-
 }

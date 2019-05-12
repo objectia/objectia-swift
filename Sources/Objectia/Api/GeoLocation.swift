@@ -7,6 +7,67 @@
 import Foundation
 
 struct GeoLocation : Decodable {
+
+    struct Currency : Decodable {
+        var code: String?
+        var numericCode: String?   
+        var name: String?          
+        var pluralName: String?    
+        var symbol: String?        
+        var nativeSymbol: String? 
+        var decimalDigits: Int?    
+
+        private enum CodingKeys : String, CodingKey {
+            case code            
+            case numericCode = "num_code"
+            case name
+            case pluralName = "name_plural"                
+            case symbol
+            case nativeSymbol = "symbol_native"        
+            case decimalDigits = "decimal_digits"        
+        }
+    }
+
+    struct Language : Decodable {
+        var code: String?
+        var code2: String?   
+        var name: String?          
+        var nativeName: String? 
+        var rtl: Bool?    
+
+        private enum CodingKeys : String, CodingKey {
+            case code            
+            case code2 = "code2"
+            case name
+            case nativeName = "native_name"                
+            case rtl
+        }
+    }
+
+    struct Timezone : Decodable {
+        var id: String?
+        var localTime: String?   
+        var gmtOffset: Int?          
+        var code: String?        
+        var daylightSaving: Bool? 
+
+        private enum CodingKeys : String, CodingKey {
+            case id
+            case localTime = "localtime"
+            case gmtOffset = "gmt_offset"                
+            case code            
+            case daylightSaving = "daylight_saving"        
+        }
+    }
+
+    //FIXME
+    struct Security : Decodable {
+        var x: String?
+        private enum CodingKeys : String, CodingKey {
+            case x
+        }
+    }
+
     var ipAddress: String?         
     var type: String?   // ipv4 or ipv6       
     var hostname: String?                
@@ -24,14 +85,14 @@ struct GeoLocation : Decodable {
 	var latitude: Double? = 0.0;              
 	var longitude: Double? = 0.0;    
 	var phonePrefix: String?             
-    var currencies: [IPCurrency]?
-    var languages: [IPLanguage]?
     var flag: String?                    
 	var flagEmoji: String?               
     var isEU: Bool? = false;        
 	var tld: String?                     
-    var timezone: IPTimezone?
-    //var IPSecurity security 
+    var currencies: [Currency]?
+    var languages: [Language]?
+    var timezone: Timezone?
+    var security: Security? 
 
     private enum CodingKeys : String, CodingKey {
         case ipAddress = "ip"         
@@ -55,10 +116,10 @@ struct GeoLocation : Decodable {
         case flagEmoji = "flag_emoji"               
         case isEU = "is_eu"
         case tld = "internet_tld"                     
-        //case currencies
-        //case languages
-        //case timezone
-        //case security 
+        case currencies
+        case languages
+        case timezone
+        case security 
     }
 
     static func get(ip: String, fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> GeoLocation? {
@@ -66,7 +127,6 @@ struct GeoLocation : Decodable {
         let query = makeQuery(fields: fields, hostname: hostname, security: security)
         let data = try restClient.get(path: "/geoip/" + ip + query)
         let resp = try JSONDecoder().decode(Response<GeoLocation>.self, from: data!)
-        dump(resp)
         return resp.data
     }
 
@@ -80,7 +140,6 @@ struct GeoLocation : Decodable {
         let query = makeQuery(fields: fields, hostname: hostname, security: security)
         let data = try restClient.get(path: "/geoip/" + ips + query)
         let resp = try JSONDecoder().decode(Response<[GeoLocation]>.self, from: data!)
-        dump(resp)
         return resp.data
     }
 
@@ -99,48 +158,4 @@ struct GeoLocation : Decodable {
         }
         return result
     }
- 
-    /*static func fromJSON(json: Any?) -> Any? {
-        if json is Dictionary<String,Any> {
-            let dict = json as! Dictionary<String,Any>  
-            var result = GeoLocation()
-
-            result.ipAddress = dict["ip"] as? String
-            result.type = dict["type"] as? String
-            result.hostname = dict["hostname"] as? String
-            result.continent = dict["continent_name"] as? String
-            result.continentCode = dict["continent_code"] as? String
-            result.country = dict["country_name"] as? String
-            result.countryNative = dict["country_name_native"] as? String
-            result.countryCode = dict["country_code"] as? String
-            result.countryCode3 = dict["country_code3"] as? String
-            result.capital = dict["capital"] as? String
-            result.region = dict["region_name"] as? String
-            result.regionCode = dict["region_code"] as? String
-            result.city = dict["city"] as? String
-            result.postcode = dict["postcode"] as? String
-            result.latitude = dict["latitude"] as? Double
-            result.longitude = dict["longitude"] as? Double
-            result.phonePrefix = dict["phone_prefix"] as? String
-            result.flag = dict["flag"] as? String
-            result.flagEmoji = dict["flag_emoji"] as? String
-            result.isEU = dict["is_eu"] as? Bool
-            result.tld = dict["internet_tld"] as? String
-
-            result.currencies = IPCurrency.fromJSON(json: dict["currencies"]) as? [IPCurrency]
-            result.languages = IPLanguage.fromJSON(json: dict["languages"]) as? [IPLanguage]
-            result.timezone = IPTimezone.fromJSON(json: dict["timezone"]) as? IPTimezone
-
-            return result
-        } else if json is Array<Any> {
-            let arr = json as! Array<Any>
-            var result = [GeoLocation]()
-            for entry in arr {
-                let item = GeoLocation.fromJSON(json: entry) as? GeoLocation
-                result.append(item!)
-            }
-            return result
-        }
-        return nil
-    }*/
 }

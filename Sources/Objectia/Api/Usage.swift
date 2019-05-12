@@ -17,7 +17,6 @@ struct Usage : Decodable {
         let restClient = try ObjectiaClient.getRestClient()
         let data = try restClient.get(path: "/usage")
         let resp = try JSONDecoder().decode(Response<Usage>.self, from: data!)
-        dump(resp)
         return resp.data
     }
 }
