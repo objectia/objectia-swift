@@ -97,7 +97,7 @@ do {
     let location = try GeoLocation.get("8.8.8.8")
     print("Country code:", location!.countryCode!)
 } catch let err as ObjectiaError {
-    print("Request failed", err) 
+    print("Request failed:", err) 
 } catch {
     print("Other error...") 
 }
