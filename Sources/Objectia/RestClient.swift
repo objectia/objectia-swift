@@ -78,16 +78,18 @@ class RestClient : NSObject, URLSessionDataDelegate {
             if error == nil {
                 if let httpResponse = response as? HTTPURLResponse {
                     if let responseData = data {
-                        if httpResponse.statusCode >= 500 {
-                            let error = ServerError.compose(statusCode: httpResponse.statusCode)
-                            taskCallback(nil, error)
-                        } else {
-                            if [200, 201].contains(httpResponse.statusCode) {
+                        switch httpResponse.statusCode {
+                            case 200 ... 299:
                                 taskCallback(responseData, nil)
-                            } else {
+                            case 400 ... 499:
                                 let error = ResponseError.compose(from: responseData, statusCode: httpResponse.statusCode)
                                 taskCallback(nil, error)
-                            }
+                            case 500 ... 599:    
+                                let error = ServerError.compose(statusCode: httpResponse.statusCode)
+                                taskCallback(nil, error)
+                            default:
+                                assert(false)
+                                break
                         }
                     }
                 } else {

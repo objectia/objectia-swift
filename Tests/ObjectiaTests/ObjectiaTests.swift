@@ -25,7 +25,8 @@ class ObjectiaTests: XCTestCase {
             XCTAssertNotNil(usage!)
             print("Requests:", usage!.geoLocationRequests)
         } catch let err as ObjectiaError {
-            print("Request failed", err) 
+            print("Request failed:", err) 
+            XCTAssert(false)      
         } catch {
             print(error)
             XCTAssert(false)      
@@ -58,9 +59,11 @@ class ObjectiaTests: XCTestCase {
                  case .badRequest(let params):
                     XCTAssertEqual(params.code, "err-invalid-ip")      
                 default:
+                    print(err)
                     XCTAssert(false)      
              }
         } catch {
+            print(error)
             XCTAssert(false)      
         }
     }
@@ -73,6 +76,7 @@ class ObjectiaTests: XCTestCase {
             dump(locations!)
         } catch {
             print("Unexpected error: \(error).")
+            XCTAssert(false)      
         }
     }
 }
