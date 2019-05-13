@@ -18,15 +18,15 @@ class RestClient : NSObject, URLSessionDataDelegate {
         return try request(method: "GET", path: path)
     }
 
-    public func post(path: String, payload: Data?) throws -> Data? {
+    public func post(path: String, payload: Data? = nil) throws -> Data? {
         return try request(method: "POST", path: path, payload: payload)
     }
 
-    public func put(path: String, payload: Data?) throws -> Data? {
+    public func put(path: String, payload: Data? = nil) throws -> Data? {
         return try request(method: "PUT", path: path, payload: payload)
     }
 
-    public func patch(path: String, payload: Data?) throws -> Data? {
+    public func patch(path: String, payload: Data? = nil) throws -> Data? {
         return try request(method: "PATCH", path: path, payload: payload)
     }
 
@@ -64,9 +64,9 @@ class RestClient : NSObject, URLSessionDataDelegate {
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue(Constants.USER_AGENT, forHTTPHeaderField: "User-Agent")
 
-        if ["POST", "PUT", "PATCH"].contains(method) {
+        if payload != nil {
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = payload
+            request.httpBody = payload!
         }
 
         // set up the session
