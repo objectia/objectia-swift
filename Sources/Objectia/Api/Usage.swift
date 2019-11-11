@@ -6,17 +6,11 @@
 //
 import Foundation
 
-struct Usage : Decodable {
-    var geoLocationRequests: Int
-
-    private enum CodingKeys : String, CodingKey {
-        case geoLocationRequests = "geoip_requests"
-    }
-
-    static func get() throws -> Usage? {
+struct Usage {
+    static func get() throws -> APIUsage? {
         let restClient = try ObjectiaClient.getRestClient()
-        let data = try restClient.get(path: "/usage")
-        let resp = try JSONDecoder().decode(Response<Usage>.self, from: data!)
+        let data = try restClient.get(path: "/v1/usage")
+        let resp = try JSONDecoder().decode(Response<APIUsage>.self, from: data!)
         return resp.data
     }
 }

@@ -125,7 +125,7 @@ struct GeoLocation : Decodable {
     static func get(ip: String, fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> GeoLocation? {
         let restClient = try ObjectiaClient.getRestClient()
         let query = makeQuery(fields: fields, hostname: hostname, security: security)
-        let data = try restClient.get(path: "/geoip/" + ip + query)
+        let data = try restClient.get(path: "/v1/geoip/" + ip + query)
         let resp = try JSONDecoder().decode(Response<GeoLocation>.self, from: data!)
         return resp.data
     }
@@ -138,7 +138,7 @@ struct GeoLocation : Decodable {
         let restClient = try ObjectiaClient.getRestClient()
         let ips = ipList.joined(separator: ",")
         let query = makeQuery(fields: fields, hostname: hostname, security: security)
-        let data = try restClient.get(path: "/geoip/" + ips + query)
+        let data = try restClient.get(path: "/v1/geoip/" + ips + query)
         let resp = try JSONDecoder().decode(Response<[GeoLocation]>.self, from: data!)
         return resp.data
     }

@@ -79,4 +79,21 @@ class ObjectiaTests: XCTestCase {
             XCTAssert(false)      
         }
     }
+
+    func testSendMail() {
+        do {
+            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
+
+            let message = MailMessage(from: "ok@demo2.org", to: ["ok@demo2.org"], subject: "Swift test", text: "This is just a test")
+            let receipt = try Mail.send(message: message)
+            XCTAssertNotNil(receipt!)
+            print("Accepted recipients:", receipt!.acceptedRecipients)
+        } catch let err as ObjectiaError {
+            print("Request failed:", err) 
+            XCTAssert(false)      
+        } catch {
+            print(error)
+            XCTAssert(false)      
+        }
+    }
 }

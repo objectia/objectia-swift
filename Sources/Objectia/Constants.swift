@@ -8,8 +8,8 @@
 import Foundation
 
 struct Constants {
-     static let API_BASE_URL: String = "https://api.objectia.com/rest/v1"
-     static let VERSION: String = "0.9.1"
+     static let API_BASE_URL: String = "https://api.objectia.com"
+     static let VERSION: String = "0.9.2"
      static let USER_AGENT: String = "objectia-swift/" + VERSION
      static let DEFAULT_TIMEOUT: TimeInterval = 30.0 // seconds
  }
