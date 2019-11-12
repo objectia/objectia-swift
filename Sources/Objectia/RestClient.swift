@@ -14,30 +14,30 @@ class RestClient : NSObject, URLSessionDataDelegate {
         self.timeout = timeout 
     }
 
-    public func get(path: String) throws -> Data? {
-        return try request(method: "GET", path: path)
+    public func get(path: String, headers: [String: String] = [:]) throws -> Data? {
+        return try request(method: "GET", path: path, headers: headers)
     }
 
-    public func post(path: String, payload: Data? = nil) throws -> Data? {
-        return try request(method: "POST", path: path, payload: payload)
+    public func post(path: String, payload: Data? = nil, headers: [String: String] = [:]) throws -> Data? {
+        return try request(method: "POST", path: path, payload: payload, headers: headers)
     }
 
-    public func put(path: String, payload: Data? = nil) throws -> Data? {
-        return try request(method: "PUT", path: path, payload: payload)
+    public func put(path: String, payload: Data? = nil, headers: [String: String] = [:]) throws -> Data? {
+        return try request(method: "PUT", path: path, payload: payload, headers: headers)
     }
 
-    public func patch(path: String, payload: Data? = nil) throws -> Data? {
-        return try request(method: "PATCH", path: path, payload: payload)
+    public func patch(path: String, payload: Data? = nil, headers: [String: String] = [:]) throws -> Data? {
+        return try request(method: "PATCH", path: path, payload: payload, headers: headers)
     }
 
-    public func delete(path: String) throws -> Data? {
-        return try request(method: "DELETE", path: path)
+    public func delete(path: String, headers: [String: String] = [:]) throws -> Data? {
+        return try request(method: "DELETE", path: path, headers: headers)
     }
 
-    func request(method: String, path: String, payload: Data? = nil) throws -> Data? {
+    func request(method: String, path: String, payload: Data? = nil, headers: [String: String] = [:]) throws -> Data? {
         var result: Data?
         var err: Error?
-        try execute(method: method, path: path, payload: payload) { 
+        try execute(method: method, path: path, payload: payload, headers: headers) { 
             (data, error) in
             result = data
             err = error
@@ -49,7 +49,7 @@ class RestClient : NSObject, URLSessionDataDelegate {
         return result!
     }
 
-    func execute(method: String, path: String, payload: Data? = nil, taskCallback: @escaping (Data?, Error?) -> Void) throws {
+    func execute(method: String, path: String, payload: Data? = nil, headers: [String: String] = [:], taskCallback: @escaping (Data?, Error?) -> Void) throws {
         guard let url = URL(string: Constants.API_BASE_URL + path) else {
             throw ObjectiaError.invalidURL(reason: Constants.API_BASE_URL + path)
         }
@@ -58,14 +58,20 @@ class RestClient : NSObject, URLSessionDataDelegate {
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: timeout)
         request.httpMethod = method
 
-        // Add headers
+        // Default headers
         request.addValue("Bearer " + self.apiKey, forHTTPHeaderField: "Authorization")
         request.addValue("UTF-8", forHTTPHeaderField: "Accept-Charset")
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue(Constants.USER_AGENT, forHTTPHeaderField: "User-Agent")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Additional headers
+        for (key, value) in headers {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
 
         if payload != nil {
-            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+//            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = payload!
         }
 

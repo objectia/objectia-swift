@@ -9,11 +9,9 @@ import Foundation
 struct Mail {
     static func send(message: MailMessage) throws -> MailReceipt? {
         let restClient = try ObjectiaClient.getRestClient()
-
-        let encoder = JSONEncoder()
-        let payload = try encoder.encode(message)
-
-        let data = try restClient.post(path: "/v1/mail/send", payload: payload)
+        let multipart = Multipart()
+        let (payload, headers) = try multipart.encode(fields: message.asDictionary, files: message.attachments)
+        let data = try restClient.post(path: "/v1/mail/send", payload: payload, headers: headers)
         let resp = try JSONDecoder().decode(Response<MailReceipt>.self, from: data!)
         return resp.data
     }

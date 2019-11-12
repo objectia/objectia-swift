@@ -4,12 +4,15 @@ import XCTest
 import Foundation
 
 class ObjectiaTests: XCTestCase {
-    var apiKey: String?
-
     override func setUp() {
         super.setUp()
-        if let value = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] {
-            self.apiKey = value
+        if let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] {
+            do {
+                try ObjectiaClient.initialize(apiKey: apiKey) 
+            } catch {
+                print(error)
+                XCTAssert(false)      
+            }
         }
     }
 
@@ -18,9 +21,9 @@ class ObjectiaTests: XCTestCase {
         super.tearDown()
     }
 
+/*
     func testGetUsage() {
         do {
-            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
             let usage = try Usage.get()
             XCTAssertNotNil(usage!)
             print("Requests:", usage!.geoLocationRequests)
@@ -35,7 +38,6 @@ class ObjectiaTests: XCTestCase {
     
     func testGetLocation() {
         do {
-            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
             let location = try GeoLocation.get(ip: "8.8.8.8")
 
             XCTAssertNotNil(location!)
@@ -51,7 +53,6 @@ class ObjectiaTests: XCTestCase {
 
     func testGetLocationWithInvalidIP() {
         do {
-            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
             let location = try GeoLocation.get(ip: "288.8.8.8")
             XCTAssertNil(location!)   
          } catch let err as ObjectiaError {
@@ -70,7 +71,6 @@ class ObjectiaTests: XCTestCase {
 
     func testGetBulkLocation() {
         do {
-            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
             let locations = try GeoLocation.getBulk(ipList: ["8.8.8.8", "apple.com"])
             XCTAssertEqual(locations!.count, 2)   
             dump(locations!)
@@ -78,13 +78,12 @@ class ObjectiaTests: XCTestCase {
             print("Unexpected error: \(error).")
             XCTAssert(false)      
         }
-    }
+    }*/
 
     func testSendMail() {
         do {
-            try ObjectiaClient.initialize(apiKey: self.apiKey!) 
-
-            let message = MailMessage(from: "ok@demo2.org", to: ["ok@demo2.org"], subject: "Swift test", text: "This is just a test")
+            var message = MailMessage(from: "ok@demo2.org", to: ["ok@demo2.org"], subject: "Swift test", text: "This is just a test")
+            message.attachments = ["/Users/otto/me.png"]
             let receipt = try Mail.send(message: message)
             XCTAssertNotNil(receipt!)
             print("Accepted recipients:", receipt!.acceptedRecipients)
@@ -96,4 +95,20 @@ class ObjectiaTests: XCTestCase {
             XCTAssert(false)      
         }
     }
+
+    /*func testSendMailHTML() {
+        do {
+            var message = MailMessage(from: "ok@demo2.org", to: ["ok@demo2.org"], subject: "Swift test", text: "This is just a test")
+            message.html = "<p>This is the test</p>"
+            let receipt = try Mail.send(message: message)
+            XCTAssertNotNil(receipt!)
+            print("Accepted recipients:", receipt!.acceptedRecipients)
+        } catch let err as ObjectiaError {
+            print("Request failed:", err) 
+            XCTAssert(false)      
+        } catch {
+            print(error)
+            XCTAssert(false)      
+        }
+    }*/
 }
