@@ -4,6 +4,7 @@
 //
 //  Copyright © 2019 UAB Salesfly. All rights reserved.
 //
+
 import Foundation
 
 struct Mail {

@@ -21,7 +21,6 @@ class ObjectiaTests: XCTestCase {
         super.tearDown()
     }
 
-/*
     func testGetUsage() {
         do {
             let usage = try Usage.get()
@@ -78,7 +77,7 @@ class ObjectiaTests: XCTestCase {
             print("Unexpected error: \(error).")
             XCTAssert(false)      
         }
-    }*/
+    }
 
     func testSendMail() {
         do {
@@ -96,7 +95,7 @@ class ObjectiaTests: XCTestCase {
         }
     }
 
-    /*func testSendMailHTML() {
+    func testSendMailHTML() {
         do {
             var message = MailMessage(from: "ok@demo2.org", to: ["ok@demo2.org"], subject: "Swift test", text: "This is just a test")
             message.html = "<p>This is the test</p>"
@@ -110,5 +109,5 @@ class ObjectiaTests: XCTestCase {
             print(error)
             XCTAssert(false)      
         }
-    }*/
+    }
 }

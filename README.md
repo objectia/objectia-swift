@@ -94,7 +94,7 @@ guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
 
 do {
     try ObjectiaClient.initialize(apiKey: apiKey) 
-    let location = try GeoLocation.get("8.8.8.8")
+    let location = try GeoLocation.get(ip: "8.8.8.8")
     print("Country code:", location!.countryCode!)
 } catch let err as ObjectiaError {
     print("Request failed:", err) 

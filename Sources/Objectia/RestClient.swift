@@ -1,3 +1,10 @@
+//
+//  RestClient.swift
+//  Swift client for Objectia API 
+//
+//  Copyright © 2019 UAB Salesfly. All rights reserved.
+//
+
 import Foundation
 
 class RestClient : NSObject, URLSessionDataDelegate {
