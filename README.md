@@ -5,7 +5,7 @@ Swift client for [Objectia API](https://objectia.com)&reg;
 
 ## Documentation
 
-See the [Swift API docs](https://docs.objectia.com/guide/swift.html).
+See the [Swift API docs](https://docs.objectia.com//swift/).
 
 
 ## Installation
