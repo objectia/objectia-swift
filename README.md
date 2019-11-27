@@ -5,7 +5,7 @@ Swift client for [Objectia API](https://objectia.com)&reg;
 
 ## Documentation
 
-See the [Swift API docs](https://docs.objectia.com//swift/).
+See the [Swift API docs](https://docs.objectia.com/swift/).
 
 
 ## Installation
@@ -76,7 +76,7 @@ Then run <code>carthage update</code>.
 
 ### Requirements
 
-* Swift 4.0+
+* Apple Xcode 10.0 or later with Swift 4.0+
 
 
 ## Usage
