@@ -64,4 +64,8 @@ class ObjectiaClient {
     public static func invalidate() {
         ObjectiaClient.restClient = nil
     }
+
+    public static func getVersion() -> String {
+        return Constants.VERSION
+    }
 }

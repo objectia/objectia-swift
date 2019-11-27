@@ -21,6 +21,11 @@ class ObjectiaTests: XCTestCase {
         super.tearDown()
     }
 
+    func testGetVersion() {
+        let v = ObjectiaClient.getVersion()
+        XCTAssertEqual(v, Constants.VERSION)   
+    }
+
     func testGetUsage() {
         do {
             let usage = try Usage.get()

@@ -60,9 +60,23 @@ struct IPTimezone : Decodable {
 
 //FIXME
 struct IPSecurity : Decodable {
-    var x: String?
+    var isProxy: Bool?
+    var proxyType: String?
+    var isCrawler: Bool?
+    var crawlerName: String?
+    var crawlerType: String?
+    var isTOR: Bool?
+    var threatLevel: String?
+    var threatTypes: [String]?
     private enum CodingKeys : String, CodingKey {
-        case x
+        case isProxy = "is_proxy"
+        case proxyType = "proxy_type"
+        case isCrawler = "is_crawler"
+        case crawlerName = "crawler_name"
+        case crawlerType = "crawler_type"
+        case isTOR = "is_tor"
+        case threatLevel = "threat_level"
+        case threatTypes = "threat_types"
     }
 }
 
