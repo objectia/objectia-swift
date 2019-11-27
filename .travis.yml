@@ -5,5 +5,6 @@ branches:
     - master
 
 script:
+  swift -version
   swift build
 #  swift test
