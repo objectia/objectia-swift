@@ -8,9 +8,9 @@
 import Foundation
 
 public struct MailReceipt : Decodable {
-    var id: String
-    var acceptedRecipients: Int
-    var rejectedRecipients: Int
+    public var id: String
+    public var acceptedRecipients: Int
+    public var rejectedRecipients: Int
 
     private enum CodingKeys : String, CodingKey {
         case id = "id"

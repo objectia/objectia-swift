@@ -7,8 +7,8 @@
 import Foundation
 
 public struct APIUsage : Decodable {
-    var geoLocationRequests: Int
-    var mailRequests: Int
+    public var geoLocationRequests: Int
+    public var mailRequests: Int
 
     private enum CodingKeys : String, CodingKey {
         case geoLocationRequests = "geoip_requests"

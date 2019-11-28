@@ -8,30 +8,30 @@
 import Foundation
 
 public struct MailMessage: Codable {
-    var from: String
-    var to: [String]
-    var subject: String
-    var text: String
-    var date: Date?
-    var html: String?
-    var attachments: [String]
-    var fromName: String?
-    var replyTo: String?
-    var cc: [String]
-    var bcc: [String]
-    var charset: String?
-    var encoding: String?
-    var tags: [String]
+    public var from: String
+    public var to: [String]
+    public var subject: String
+    public var text: String
+    public var date: Date?
+    public var html: String?
+    public var attachments: [String]
+    public var fromName: String?
+    public var replyTo: String?
+    public var cc: [String]
+    public var bcc: [String]
+    public var charset: String?
+    public var encoding: String?
+    public var tags: [String]
 
-    var requireTLS: Bool?
-    var verifyCertificate: Bool?
-    var openTracking: Bool?
-    var clickTracking: Bool?
-    var plainTextClickTracking: Bool?
-    var unsubscribeTracking: Bool?
-    var testMode: Bool?
+    public var requireTLS: Bool?
+    public var verifyCertificate: Bool?
+    public var openTracking: Bool?
+    public var clickTracking: Bool?
+    public var plainTextClickTracking: Bool?
+    public var unsubscribeTracking: Bool?
+    public var testMode: Bool?
 
-    init(from: String, to: [String], subject: String, text: String) {        
+    public init(from: String, to: [String], subject: String, text: String) {        
         // Mandatory:
         self.from = from
         self.to = to
