@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RestClient : NSObject, URLSessionDataDelegate {
+public class RestClient : NSObject, URLSessionDataDelegate {
     var apiKey: String
     var timeout: TimeInterval
     var apiBaseURL: String

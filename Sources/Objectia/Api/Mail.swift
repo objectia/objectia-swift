@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Mail {
-    static func send(message: MailMessage) throws -> MailReceipt? {
+public struct Mail {
+    public static func send(message: MailMessage) throws -> MailReceipt? {
         let restClient = try ObjectiaClient.getRestClient()
         let multipart = Multipart()
         let (payload, headers) = try multipart.encode(fields: message.asDictionary, files: message.attachments)

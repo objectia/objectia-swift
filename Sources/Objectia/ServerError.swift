@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ServerError {
+public struct ServerError {
     static func compose(statusCode: Int) -> Error {
         switch statusCode {
             case 502:

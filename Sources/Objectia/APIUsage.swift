@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct APIUsage : Decodable {
+public struct APIUsage : Decodable {
     var geoLocationRequests: Int
     var mailRequests: Int
 

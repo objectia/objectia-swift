@@ -1,14 +1,14 @@
 import Foundation
 import Objectia
 
-guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
-    print("API key not found...")
-    return
-}
+extension String: Error {}
 
 do {
+    guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
+        throw "API key not set"
+    }
     try ObjectiaClient.initialize(apiKey: apiKey) 
-    let location = try GeoLocation.get(ip: "8.8.8.8")
+    let location = try GeoLocation.get(ip: "1.1.1.1")
     print("Country code:", location!.countryCode!)
 } catch let err as ObjectiaError {
     print("API request failed:") 
@@ -16,10 +16,10 @@ do {
         case .badRequest(let params):
             print("* Status:", 400) 
             print("* Code:", params.code) 
-            print("* Message:", params.message) 
+            print("* Message:", params.reason) 
         default:
-            print("Other error...") 
+            print(err) 
     }
 } catch {
-    print("Other error...") 
+    print("Error:", error) 
 }

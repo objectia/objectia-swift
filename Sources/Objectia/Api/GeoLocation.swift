@@ -6,9 +6,9 @@
 //
 import Foundation
 
-struct GeoLocation {
+public struct GeoLocation {
 
-    static func get(ip: String, fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> IPLocation? {
+    public static func get(ip: String, fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> IPLocation? {
         let restClient = try ObjectiaClient.getRestClient()
         let query = makeQuery(fields: fields, hostname: hostname, security: security)
         let data = try restClient.get(path: "/v1/geoip/" + ip + query)
@@ -16,11 +16,11 @@ struct GeoLocation {
         return resp.data
     }
 
-    static func getCurrent(fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> IPLocation? {
+    public static func getCurrent(fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> IPLocation? {
         return try GeoLocation.get(ip: "myip", fields: fields, hostname: hostname, security: security)
     }
 
-    static func getBulk(ipList: [String], fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> [IPLocation]? {
+    public static func getBulk(ipList: [String], fields: String? = nil, hostname: Bool = false, security: Bool = false) throws -> [IPLocation]? {
         let restClient = try ObjectiaClient.getRestClient()
         let ips = ipList.joined(separator: ",")
         let query = makeQuery(fields: fields, hostname: hostname, security: security)
@@ -29,7 +29,7 @@ struct GeoLocation {
         return resp.data
     }
 
-    static private func makeQuery(fields: String? = nil, hostname: Bool = false, security: Bool = false) -> String {
+    private static func makeQuery(fields: String? = nil, hostname: Bool = false, security: Bool = false) -> String {
         var result: String = ""
         if (fields != nil) {
             result += "?fields=" + fields!

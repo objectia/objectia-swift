@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ObjectiaClient {
+public class ObjectiaClient {
     static var apiKey: String?
     static var timeout: TimeInterval?
     static var restClient: RestClient?

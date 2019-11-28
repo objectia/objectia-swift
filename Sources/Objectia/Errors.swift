@@ -5,7 +5,7 @@
 //  Copyright © 2019 UAB Salesfly. All rights reserved.
 //
 
-enum ObjectiaError : Error {
+public enum ObjectiaError : Error {
   //--- General
   case missingArgument(reason: String)
   case notInitialized(reason: String)

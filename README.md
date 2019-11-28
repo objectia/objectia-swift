@@ -87,19 +87,19 @@ The library needs to be configured with your account's API key. Get your own API
 import Foundation
 import Objectia
 
-guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
-    print("API key not found...")
-    return
-}
+extension String: Error {}
 
 do {
+    guard let apiKey = ProcessInfo.processInfo.environment["OBJECTIA_APIKEY"] else {
+        throw "API key not set"
+    }
     try ObjectiaClient.initialize(apiKey: apiKey) 
     let location = try GeoLocation.get(ip: "8.8.8.8")
     print("Country code:", location!.countryCode!)
 } catch let err as ObjectiaError {
     print("Request failed:", err) 
 } catch {
-    print("Other error...") 
+    print("Error:", error) 
 }
 ```
 

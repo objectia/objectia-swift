@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ResponseError : Decodable {
+public struct ResponseError : Decodable {
     static func compose(from data: Data, statusCode: Int) -> Error {
         do {
             let resp = try JSONDecoder().decode(Response<ResponseError>.self, from: data)

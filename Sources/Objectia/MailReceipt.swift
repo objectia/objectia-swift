@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MailReceipt : Decodable {
+public struct MailReceipt : Decodable {
     var id: String
     var acceptedRecipients: Int
     var rejectedRecipients: Int

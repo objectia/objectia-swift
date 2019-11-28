@@ -6,14 +6,14 @@
 //
 import Foundation
 
-struct IPCurrency : Decodable {
-    var code: String?
-    var numericCode: String?   
-    var name: String?          
-    var pluralName: String?    
-    var symbol: String?        
-    var nativeSymbol: String? 
-    var decimalDigits: Int?    
+public struct IPCurrency : Decodable {
+    public var code: String?
+    public var numericCode: String?   
+    public var name: String?          
+    public var pluralName: String?    
+    public var symbol: String?        
+    public var nativeSymbol: String? 
+    public var decimalDigits: Int?    
 
     private enum CodingKeys : String, CodingKey {
         case code            
@@ -26,12 +26,12 @@ struct IPCurrency : Decodable {
     }
 }
 
-struct IPLanguage : Decodable {
-    var code: String?
-    var code2: String?   
-    var name: String?          
-    var nativeName: String? 
-    var rtl: Bool?    
+public struct IPLanguage : Decodable {
+    public var code: String?
+    public var code2: String?   
+    public var name: String?          
+    public var nativeName: String? 
+    public var rtl: Bool?    
 
     private enum CodingKeys : String, CodingKey {
         case code            
@@ -42,12 +42,12 @@ struct IPLanguage : Decodable {
     }
 }
 
-struct IPTimezone : Decodable {
-    var id: String?
-    var localTime: String?   
-    var gmtOffset: Int?          
-    var code: String?        
-    var daylightSaving: Bool? 
+public struct IPTimezone : Decodable {
+    public var id: String?
+    public var localTime: String?   
+    public var gmtOffset: Int?          
+    public var code: String?        
+    public var daylightSaving: Bool? 
 
     private enum CodingKeys : String, CodingKey {
         case id
@@ -58,16 +58,15 @@ struct IPTimezone : Decodable {
     }
 }
 
-//FIXME
-struct IPSecurity : Decodable {
-    var isProxy: Bool?
-    var proxyType: String?
-    var isCrawler: Bool?
-    var crawlerName: String?
-    var crawlerType: String?
-    var isTOR: Bool?
-    var threatLevel: String?
-    var threatTypes: [String]?
+public struct IPSecurity : Decodable {
+    public var isProxy: Bool?
+    public var proxyType: String?
+    public var isCrawler: Bool?
+    public var crawlerName: String?
+    public var crawlerType: String?
+    public var isTOR: Bool?
+    public var threatLevel: String?
+    public var threatTypes: [String]?
     private enum CodingKeys : String, CodingKey {
         case isProxy = "is_proxy"
         case proxyType = "proxy_type"
@@ -80,32 +79,32 @@ struct IPSecurity : Decodable {
     }
 }
 
-struct IPLocation : Decodable {
-    var ipAddress: String?         
-    var type: String?   // ipv4 or ipv6       
-    var hostname: String?                
-	var continent: String?            
-	var continentCode: String?        
-    var country: String?              
-    var countryNative: String?        
-    var countryCode: String? 
-    var countryCode3: String?         
-	var capital: String?              
-	var region: String?                  
-	var regionCode: String?              
-	var city: String?                     
-	var postcode: String?                 
-	var latitude: Double? = 0.0              
-	var longitude: Double? = 0.0
-	var phonePrefix: String?             
-    var flag: String?                    
-	var flagEmoji: String?               
-    var isEU: Bool? = false
-	var tld: String?                     
-    var currencies: [IPCurrency]?
-    var languages: [IPLanguage]?
-    var timezone: IPTimezone?
-    var security: IPSecurity? 
+public struct IPLocation : Decodable {
+    public var ipAddress: String?         
+    public var type: String?   // ipv4 or ipv6       
+    public var hostname: String?                
+	public var continent: String?            
+	public var continentCode: String?        
+    public var country: String?              
+    public var countryNative: String?        
+    public var countryCode: String? 
+    public var countryCode3: String?         
+	public var capital: String?              
+	public var region: String?                  
+	public var regionCode: String?              
+	public var city: String?                     
+	public var postcode: String?                 
+	public var latitude: Double? = 0.0              
+	public var longitude: Double? = 0.0
+	public var phonePrefix: String?             
+    public var flag: String?                    
+	public var flagEmoji: String?               
+    public var isEU: Bool? = false
+	public var tld: String?                     
+    public var currencies: [IPCurrency]?
+    public var languages: [IPLanguage]?
+    public var timezone: IPTimezone?
+    public var security: IPSecurity? 
 
     private enum CodingKeys : String, CodingKey {
         case ipAddress = "ip"         

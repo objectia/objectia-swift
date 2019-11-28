@@ -1,5 +1,8 @@
 # Notes to self
 
+## Create project
+swift package init --type executable
+
 ## Install or update dependencies
 swift package update
 
